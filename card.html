@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toolkit card</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page">
+    <div class="stage">
+      <button class="arrow" id="prev" aria-label="Previous card">‹</button>
+      <div class="col">
+        <div class="phase" id="phase" aria-live="polite"></div>
+        <article class="sheet" id="sheet"></article>
+      </div>
+      <button class="arrow" id="next" aria-label="Next card">›</button>
+    </div>
+    <nav class="bar" aria-label="Card tools">
+      <a href="index.html#cards"><span class="ico" aria-hidden="true">⌂</span>home</a>
+      <button id="audio" aria-pressed="false"><span class="ico" aria-hidden="true">🔊</span><span id="audioLabel">audio</span></button>
+    </nav>
+  </div>
+  <script src="js/cards-data.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/card.js"></script>
+</body>
+</html>
