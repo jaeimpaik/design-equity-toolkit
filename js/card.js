@@ -48,6 +48,25 @@ document.addEventListener("keydown", e => {
 });
 
 // ---------- Audio: reads title, question, steps (not citations) ----------
+
+// ---------- Choose a pleasant voice (the device's default can sound robotic) ----------
+// Names of friendly, natural-sounding voices on different devices, best first.
+const PREFERRED = ["Samantha", "Ava", "Allison", "Susan", "Karen", "Moira", "Serena", "Daniel", "Google US English",
+  "Microsoft Aria", "Microsoft Jenny", "Microsoft Zira", "Microsoft Guy", "Natural"];
+// Novelty / robotic voices to avoid (mostly on Mac).
+const AVOID = /albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|fred|good news|hysterical|junior|kathy|organ|ralph|trinoids|whisper|zarvox|superstar|wobble|jester|grandma|grandpa|rocko|shelley|flo|eddy|reed|sandy|espeak/i;
+function pickVoice() {
+  if (!synth) return null;
+  const en = synth.getVoices().filter(v => /^en([-_]|$)/i.test(v.lang) && !AVOID.test(v.name));
+  if (!en.length) return null;
+  for (const name of PREFERRED) {
+    const hit = en.find(v => v.name.includes(name) && /^en[-_]US/i.test(v.lang)) || en.find(v => v.name.includes(name));
+    if (hit) return hit;
+  }
+  return en.find(v => /^en[-_]US/i.test(v.lang) && v.localService) || en.find(v => /^en[-_]US/i.test(v.lang)) || en[0];
+}
+if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => {};  // some browsers load voices late
+
 const audioBtn = $("audio");
 function stopAudio() {
   if (synth) synth.cancel();
@@ -61,6 +80,8 @@ audioBtn.addEventListener("click", () => {
     .concat([stepsForAudio(c.steps)]).join(" ");
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "en-US";
+  const v = pickVoice(); if (v) { u.voice = v; u.lang = v.lang; }
+  u.rate = 0.95;
   u.onend = u.onerror = stopAudio;
   synth.cancel(); synth.speak(u);
   audioBtn.setAttribute("aria-pressed", "true"); $("audioLabel").textContent = "stop";
